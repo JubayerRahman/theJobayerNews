@@ -7,7 +7,6 @@ const getCategoryes = async()=>{
     const singelCategory = data.data.news_category
     const singleNews = defaultNews.data
     console.log (data.data.news_category)
-    console.log (defaultNews.data)
 
     // lets make category
     const catagoriDiv = document.getElementById("catagoriDiv")
@@ -21,7 +20,9 @@ const getCategoryes = async()=>{
 
     // lets make news cards
     const newsFLend = document.getElementById("newsFLend")
+    let count = 0
     singleNews.forEach( singleNews=>{
+        count= count + 1
         const newscard = document.createElement("div");
         const sNewsTitles = singleNews.title;
         const sNewsDetails = singleNews.details;
@@ -29,9 +30,10 @@ const getCategoryes = async()=>{
         const shortTitles = sNewsTitles.slice(0,50)
         const shortDetails = sNewsDetails.slice(0,200)
         const shortData = publisheddate.split(" ")
-        console.log(shortData)
+        const id = singleNews._id
+        console.log(id)
         newscard.innerHTML =`
-                    <div class="card bg-base-100 shadow-xl border-[lightgray] border-[2px] cursor-pointer">
+                    <div id="${id}" onclick="a${count}.showModal(); trstfuntion(this.id)" class="card bg-base-100 shadow-xl border-[lightgray] border-[2px] cursor-pointer">
             <figure><img src="${singleNews.image_url}" alt="Shoes" /></figure>
             <div class="card-body">
                 <h2 class="card-title">${shortTitles} ...</h2>
@@ -54,6 +56,14 @@ const getCategoryes = async()=>{
                 </div>
                 </div>
             </div>
+                                <!-- You can open the modal using ID.showModal() method -->
+                    <dialog id="a${count}" class="modal">
+                    <form method="dialog"  class="modal-box">
+                        <button class="btn btn-sm btn-circle btn-ghost absolute right-2 top-2">✕</button>
+                        <div id="ohee${id}" class="ohee" ></div>
+                        
+                    </form>
+                    </dialog>
             </div>
         `
         newsFLend.appendChild(newscard)
@@ -163,6 +173,12 @@ const categoryFunction = async (cateegoryId)=>{
     console.log(singleNews) 
     console.log(mainData.status)
     errorField.textContent=''
+    for (let i = 0; i < singleNews.length; i++) {
+        const element = singleNews[i]._id;
+        console.log(element)
+        
+        
+    }
     if(mainData.status===false){
         const errorField = document.getElementById("errorField")  
         console.log("error")
@@ -179,7 +195,9 @@ const categoryFunction = async (cateegoryId)=>{
         const errorField = document.getElementById("errorField").style.display ="none"
         newsFLend.style.display= "grid"
     newsFLend.textContent=""
+    let count = 0
     singleNews.forEach( singleNews=>{
+        count = count + 1
         const newscard = document.createElement("div");
         const sNewsTitles = singleNews.title;
         const sNewsDetails = singleNews.details;
@@ -187,9 +205,10 @@ const categoryFunction = async (cateegoryId)=>{
         const shortTitles = sNewsTitles.slice(0,50)
         const shortDetails = sNewsDetails.slice(0,200)
         const shortData = publisheddate.split(" ")
+        const id = singleNews._id
         console.log(shortData)
         newscard.innerHTML =`
-                    <div class="card bg-base-100 shadow-xl border-[lightgray] border-[2px] cursor-pointer">
+                    <div id="${id}" onclick="a${count}.showModal(); trstfuntion(this.id)" class="card bg-base-100 shadow-xl border-[lightgray] border-[2px] cursor-pointer">
             <figure><img src="${singleNews.image_url}" alt="Shoes" /></figure>
             <div class="card-body">
                 <h2 class="card-title">${shortTitles} ...</h2>
@@ -212,6 +231,13 @@ const categoryFunction = async (cateegoryId)=>{
                 </div>
                 </div>
             </div>
+            <!-- You can open the modal using ID.showModal() method -->
+                    <dialog id="a${count}" class="modal">
+                    <form method="dialog" class="modal-box">
+                        <button class="btn btn-sm btn-circle btn-ghost absolute right-2 top-2">✕</button>
+                        <div id="ohee${id}" class="ohee" ></div>
+                    </form>
+                    </dialog>
             </div>
         `
         newsFLend.appendChild(newscard)
@@ -227,5 +253,32 @@ const categoryFunction = async (cateegoryId)=>{
 
 
 
-
+const trstfuntion =async(num)=>{
+    const responce = await fetch(`https://openapi.programming-hero.com/api/news/${num}`)
+    const data = await responce.json()
+    const finalData = data.data[0]
+    console.log(finalData)
+    
+    const ohee = document.getElementById("ohee"+num)
+    ohee.textContent=""
+    const modelDiv = document.createElement("div")
+    modelDiv.innerHTML =`
+        <img src="${finalData.image_url}"/>
+        <div class="bg-black w-full h-[2px] my-[10px]"></div>
+        <p class="text-center font-bold text-xl py-5 ">${finalData.title}</p>
+        <div class="flex w-full items-center justify-between">
+            <div class="author flex items-center gap-2 my-5">
+            <img class="w-[50px] rounded-full" src="${finalData.author.img}"/>
+                <div>
+                    <p>${finalData.author.name}</p>
+                    <p class="font-sans"><i class="fa-regular fa-eye"></i> ${finalData.total_view}</p>
+                </div>
+            </div>
+        </div>
+        <p>${finalData.details}</p>
+    `
+    ohee.appendChild(modelDiv)
+    
+    
+}
 getCategoryes();

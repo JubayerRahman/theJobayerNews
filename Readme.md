@@ -3,6 +3,7 @@
 
 there are 3 api links i will be using here. I will try my best to add all the details related to the website. like font family, color codes etc.
 ![fulllayout](./Imgs/img2.png)
+![model Layout](./Imgs/ModelNews.png)
 ![error Message Layout](./Imgs/img1.png)
 
 # 1st one is for the categorys:
